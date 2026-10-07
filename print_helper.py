@@ -68,29 +68,52 @@ def gerar_zpl_para_itens(itens: list, dpi: int = 203) -> str:
         qtde = str(it.get("qtde", "")).strip()
         requisitante = str(it.get("requisitante", "")).strip()
 
-        try:
-            item_interno = _buscar_item_por_kardex(kardex)
-            loc = _chave_flexivel(item_interno, "Loc novo") if item_interno else ""
-        except Exception:
-            loc = ""
+        loc_override = it.get("loc_override")
+        if loc_override is not None:
+            loc = str(loc_override).strip()
+        else:
+            try:
+                item_interno = _buscar_item_por_kardex(kardex)
+                loc = _chave_flexivel(item_interno, "Loc novo") if item_interno else ""
+            except Exception:
+                loc = ""
         loc = loc or ""
 
         zpl = [
             "^XA",
+            "^CI28" if it.get("layout") == "estoque" else "",
             "^PON",
             f"^PW{width}",
             f"^LL{height}",
             "^LH0,0",
             f"^FO{mm_to_dots(2, dpi)},{mm_to_dots(2, dpi)}^GB{width - mm_to_dots(4, dpi)},{height - mm_to_dots(4, dpi)},2^FS",
-            f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(5, dpi)}^A0N,40,40^FD{codigo}^FS",
-            f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(12, dpi)}^A0N,30,30^FD{kardex}^FS",
-            f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(20, dpi)}^A0N,25,25^FDPed: {pedido}^FS",
-            f"^FO{mm_to_dots(50, dpi)},{mm_to_dots(20, dpi)}^A0N,25,25^FDReq: {requisitante}^FS",
-            f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(30, dpi)}^A0N,30,30^FDQtde: {qtde}^FS",
-            f"^FO{mm_to_dots(50, dpi)},{mm_to_dots(30, dpi)}^A0N,30,30^FDLOC: {loc}^FS",
+        ]
+
+        if it.get("layout") == "estoque":
+            descricao = str(it.get("descricao", "")).strip()
+            zpl.extend([
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(5, dpi)}^A0N,60,70^FD{codigo}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(12, dpi)}^A0N,40,50^FD{kardex}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(20, dpi)}^A0N,25,25^FD{descricao[:40]}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(30, dpi)}^A0N,50,50^FD {loc}^FS",
+            ])
+            if qtde:
+                zpl.append(f"^FO{mm_to_dots(65, dpi)},{mm_to_dots(30, dpi)}^A0N,50,50^FDQtde: {qtde}^FS")
+        else:
+            zpl.extend([
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(5, dpi)}^A0N,40,40^FD{codigo}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(12, dpi)}^A0N,30,30^FD{kardex}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(20, dpi)}^A0N,25,25^FDPed: {pedido}^FS",
+                f"^FO{mm_to_dots(50, dpi)},{mm_to_dots(20, dpi)}^A0N,25,25^FDReq: {requisitante}^FS",
+                f"^FO{mm_to_dots(5, dpi)},{mm_to_dots(30, dpi)}^A0N,30,30^FDQtde: {qtde}^FS",
+                f"^FO{mm_to_dots(50, dpi)},{mm_to_dots(30, dpi)}^A0N,30,30^FDLOC: {loc}^FS",
+            ])
+
+        zpl.extend([
             "^PQ1",
             "^XZ",
-        ]
+        ])
+        zpl = [linha for linha in zpl if linha]
         jobs.append("\n".join(zpl))
     return "".join(jobs)
 

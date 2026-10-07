@@ -77,7 +77,7 @@
  [],
  False,
  False,
- 1791369179,
+ 1791396010,
  [('runw.exe',
    'C:\\Users\\tjz4v1\\OneDrive - '
    'Versigent\\Documentos\\PROGRAM\\SentPrintNow\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
