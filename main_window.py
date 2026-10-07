@@ -117,13 +117,14 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------
     def _setup_ui(self):
         central = QWidget()
+        central.setObjectName("centralWidget")
         self.setCentralWidget(central)
         root = QVBoxLayout(central)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
 
         # ── Header ──
-        header = QWidget()
+        header = QFrame()
         header.setObjectName("header")
         header.setFixedHeight(72)
         h_lay = QHBoxLayout(header)
@@ -285,7 +286,7 @@ class MainWindow(QMainWindow):
         body_lay.addWidget(card_log, 1)
 
         # ── Footer ──
-        footer = QWidget()
+        footer = QFrame()
         footer.setObjectName("footer")
         f_lay = QHBoxLayout(footer)
         f_lay.setContentsMargins(24, 8, 24, 8)
@@ -301,7 +302,7 @@ class MainWindow(QMainWindow):
         root.addWidget(footer)
 
     def _make_card(self) -> QWidget:
-        card = QWidget()
+        card = QFrame()
         card.setObjectName("card")
         return card
 
@@ -545,8 +546,10 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------
     def _aplicar_styles(self):
         self.setStyleSheet("""
-            QMainWindow, QWidget {
+            #centralWidget {
                 background-color: #f8fafc;
+            }
+            QWidget {
                 font-family: 'Segoe UI', sans-serif;
                 font-size: 13px;
                 color: #1e293b;
@@ -554,23 +557,28 @@ class MainWindow(QMainWindow):
             #header {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                     stop:0 #1e1b4b, stop:1 #312e81);
+                border: none;
             }
             #appTitle {
                 font-size: 18px;
                 font-weight: 700;
                 color: #ffffff;
+                background: transparent;
             }
             #appSub {
                 font-size: 11px;
                 color: #a5b4fc;
+                background: transparent;
             }
             #dotStatus {
                 font-size: 18px;
                 color: #f59e0b;
+                background: transparent;
             }
             #lblStatus {
                 font-size: 12px;
                 color: #c7d2fe;
+                background: transparent;
             }
             #separator {
                 background: #e2e8f0;
@@ -583,31 +591,32 @@ class MainWindow(QMainWindow):
                 border: 1px solid #e2e8f0;
             }
             #cardTitle {
-                font-size: 13px;
+                font-size: 14px;
                 font-weight: 700;
                 color: #0f172a;
+                background: transparent;
             }
             #fieldLabel {
                 font-size: 12px;
                 color: #64748b;
-                font-weight: 500;
+                font-weight: 600;
+                background: transparent;
             }
             QLineEdit {
-                border: 1px solid #e2e8f0;
-                border-radius: 7px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
                 padding: 0 10px;
-                background: #f8fafc;
+                background: #ffffff;
                 color: #0f172a;
             }
             QLineEdit:focus {
                 border-color: #6366f1;
-                background: #ffffff;
             }
             QComboBox {
-                border: 1px solid #e2e8f0;
-                border-radius: 7px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
                 padding: 0 10px;
-                background: #f8fafc;
+                background: #ffffff;
                 color: #0f172a;
             }
             QComboBox:focus {
@@ -622,42 +631,43 @@ class MainWindow(QMainWindow):
                     stop:0 #6366f1, stop:1 #4f46e5);
                 color: #ffffff;
                 font-weight: 600;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: none;
                 padding: 0 18px;
             }
             #btnStart:hover { background: #4f46e5; }
-            #btnStart:disabled { background: #c7d2fe; }
+            #btnStart:disabled { background: #c7d2fe; color: #ffffff; }
             #btnStop {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                     stop:0 #ef4444, stop:1 #dc2626);
                 color: #ffffff;
                 font-weight: 600;
-                border-radius: 8px;
+                border-radius: 6px;
                 border: none;
                 padding: 0 18px;
             }
             #btnStop:hover { background: #dc2626; }
-            #btnStop:disabled { background: #fca5a5; }
+            #btnStop:disabled { background: #fca5a5; color: #ffffff; }
             #btnIcon {
-                background: #f1f5f9;
-                border: 1px solid #e2e8f0;
-                border-radius: 7px;
+                background: #f8fafc;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
             }
-            #btnIcon:hover { background: #e0e7ff; }
+            #btnIcon:hover { background: #e2e8f0; }
             #btnSecondary {
-                background: #f1f5f9;
-                border: 1px solid #e2e8f0;
-                border-radius: 7px;
+                background: #ffffff;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
                 color: #475569;
                 padding: 0 12px;
+                font-weight: 500;
             }
-            #btnSecondary:hover { background: #e2e8f0; }
+            #btnSecondary:hover { background: #f1f5f9; }
             #listLog {
                 border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                background: #f8fafc;
-                alternate-background-color: #f1f5f9;
+                border-radius: 6px;
+                background: #ffffff;
+                alternate-background-color: #f8fafc;
                 font-size: 12px;
                 color: #1e293b;
                 padding: 4px;
@@ -666,13 +676,15 @@ class MainWindow(QMainWindow):
                 font-size: 12px;
                 color: #6366f1;
                 font-weight: 600;
+                background: transparent;
             }
             #footer {
-                background: #f1f5f9;
+                background: #f8fafc;
                 border-top: 1px solid #e2e8f0;
             }
             #footerLabel {
                 font-size: 11px;
                 color: #94a3b8;
+                background: transparent;
             }
         """)
